@@ -1,12 +1,19 @@
-import numpy as np
+import torch
 
-def linear_regression_normal_equation(X: list[list[float]], y: list[float]) -> list[float]:
+def linear_regression_normal_equation(X, y) -> torch.Tensor:
+    """
+    Solve linear regression via the normal equation using PyTorch.
+    X: Tensor or convertible of shape (m,n); y: shape (m,) or (m,1).
+    Returns a 1-D tensor of length n, rounded to 4 decimals.
+    """
+    X = torch.as_tensor(X, dtype = torch.float)
+    y = torch.as_tensor(y, dtype = torch.float).reshape(-1,1)
 
-    X = np.array(X, dtype=float)
-    y = np.array(y, dtype=float).reshape(-1, 1)
+    XtX = X.T @ X
+    Xty = X.T @ y
 
-    theta = np.linalg.solve(X.T @ X, X.T @ y)
+    theta = torch.linalg.solve(XtX, Xty)
 
-    theta = np.round(theta.flatten(), 4)
+    theta = torch.round(theta.flatten() * 10000) / 10000
 
-    return theta.tolist()
+    return theta 
